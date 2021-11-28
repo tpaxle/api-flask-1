@@ -1,0 +1,34 @@
+# This YAML file will hold Helm chart values that apply to all environments and will override default template values
+template:
+  package: base-services
+  version: 0.4.3
+image:
+  repository: registry.global.ccc.srvb.can.paas.cloudcenter.corp/ccc-alm
+  dockerName: almmc-api-python-useronboarding
+
+route:
+  enabled: false
+
+secrets:
+  LDAP_HOST: "ldapgrupo.aacc.gs.corp"
+  LDAP_USER: "uid=xxxxx,ou=Administradores,o=Grupo Santander"
+  LDAP_PASS: "xxxx"
+  LDAP_API_HOST: "api-team-user.almpre.europe.cloudcenter.corp"
+  LDAP_API_AUTH: "xxxx"
+  JWT_SECRET_KEY: "jwtpre"
+  FLASK_HOST: "0.0.0.0"
+  CHART_VERSION: "0.0"
+  APM_ENABLED: false
+  APM_SERVERTOKEN: "asdkf"
+  APM_SERVERURL: "https://xxx.xx.xx"
+  APM_ENV: "DEV"
+
+probe:
+  readiness:
+    initialdelay: 30
+    port: 5000
+    path: /healthcheck/
+  liveness:
+    initialdelay: 30
+    port: 5000
+    path: /healthcheck/
