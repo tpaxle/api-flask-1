@@ -8,9 +8,6 @@ env:
   REGISTRY: "registry.global.ccc.srvb.can.paas.cloudcenter.corp"
   REGISTRY_PROJECT: "ccc-alm"
   PROXY_ENABLE: true
-  http_proxy: "http://proxyapps.gsnet.corp:80"
-  https_proxy: "http://proxyapps.gsnet.corp:80"
-  no_proxy: ".corp,127.0.0.1,localhost"
   PRERELEASE: ${{ secrets.PRERELEASE }}
 jobs:
   ci_feature:
