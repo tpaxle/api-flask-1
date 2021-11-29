@@ -72,7 +72,7 @@ jobs:
         aws ecr get-login-password --region eu-west-2 | helm registry login \
           --username AWS --password-stdin ${{env.ECR}}
 
-        helm pull oci://{{ env.ECR }}/`yq read .github/helm/values.yaml template.package`--version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
+        helm pull oci://{{ env.ECR }}/`yq read .github/helm/values.yaml template.package` --version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
 
         mv `yq read .github/helm/values.yaml template.package` ${{env.PROJECT_NAME}}
         sed -i.bak "s#name: `yq read .github/helm/values.yaml template.package`#name: $PROJECT_NAME#"  $PROJECT_NAME/Chart.yaml
