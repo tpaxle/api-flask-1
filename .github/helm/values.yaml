@@ -1,7 +1,7 @@
 # This YAML file will hold Helm chart values that apply to all environments and will override default template values
 template:
   package: helm-base-services
-  version: 0.0.6
+  version: 0.0.7
 image:
   repository: 909517579108.dkr.ecr.eu-west-2.amazonaws.com
   dockerName: api-flask-1
