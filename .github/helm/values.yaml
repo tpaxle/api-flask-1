@@ -1,7 +1,7 @@
 # This YAML file will hold Helm chart values that apply to all environments and will override default template values
 template:
   package: helm-base-services
-  version: 0.0.2
+  version: 0.0.3
 image:
   repository: 909517579108.dkr.ecr.eu-west-2.amazonaws.com
   dockerName: api-flask-1
@@ -12,13 +12,12 @@ route:
 secrets:
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:secretpassword@my-release-mysql/app_database"
 
-ingress:
+istio:
   enabled: true
-  annottations: 
-    kubernetes.io/ingress.class: istio
-
   hosts:
-    - host: test.sandbox.blue4sky.local
+    - host: api-sandbox.poc.blue1sky.me
+      paths:
+        - "/"
 
 probe:
   readiness:
