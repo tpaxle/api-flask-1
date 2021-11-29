@@ -10,18 +10,8 @@ route:
   enabled: false
 
 secrets:
-  LDAP_HOST: "ldapgrupo.aacc.gs.corp"
-  LDAP_USER: "uid=xxxxx,ou=Administradores,o=Grupo Santander"
-  LDAP_PASS: "xxxx"
-  LDAP_API_HOST: "api-team-user.almpre.europe.cloudcenter.corp"
-  LDAP_API_AUTH: "xxxx"
-  JWT_SECRET_KEY: "jwtpre"
-  FLASK_HOST: "0.0.0.0"
-  CHART_VERSION: "0.0"
-  APM_ENABLED: false
-  APM_SERVERTOKEN: "asdkf"
-  APM_SERVERURL: "https://xxx.xx.xx"
-  APM_ENV: "DEV"
+  SQLALCHEMY_DATABASE_URI: "'mysql://root:secretpassword@my-release-mysql/app_database"
+
 
 probe:
   readiness:

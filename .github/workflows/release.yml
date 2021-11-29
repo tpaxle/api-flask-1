@@ -34,12 +34,6 @@ jobs:
           helm pull oci://${{ env.ECR }}/api-flask-1 --version $CHART_VERSION --untar --insecure-skip-tls-verify
           ls -al
           helm upgrade --install ${{ env.PROJECT_NAME }} ${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
-            --insecure-skip-tls-verify \
-            -n ${{secrets.OC_NAMESPACE}} \
+            --insecure-skip-tls-verify 
             --set replicaCount=1 \
-            --set namespace=${{secrets.OC_NAMESPACE}} \
-            --set secrets.APM_ENABLED=${{ secrets.APM_ENABLED }} \
-            --set secrets.APM_SERVERTOKEN=${{ secrets.APM_SERVERTOKEN }} \
-            --set secrets.APM_SERVERURL=${{ secrets.APM_SERVERURL }} \
-            --set secrets.APM_ENV=PRE \
             --history-max 3
