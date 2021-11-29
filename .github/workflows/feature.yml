@@ -53,11 +53,7 @@ jobs:
         # AWS Account ID
         account_id: 909517579108
         # Name of your ECR repository
-<<<<<<< HEAD
-        repo: ${env.PROJECT_NAME}
-=======
         repo: ${{ env.PROJECT_NAME }}
->>>>>>> 8f34a3a4d6c3c38fde1c11119c5c1c7dc0ab7926
         # The AWS region
         region: eu-west-2
         # Set this to true to create the repository if it does not already exist
