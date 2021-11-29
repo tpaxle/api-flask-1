@@ -56,9 +56,9 @@ jobs:
         aws eks --region eu-west-2 update-kubeconfig --name platf5-eks-main-s1
         helm pull oci://${{ env.ECR }}/helm-base-istio --version ${{github.event.inputs.version}}  --untar --insecure-skip-tls-verify
         ls -al
-        helm upgrade --install ${{ env.PROJECT_NAME }} helm-base-istio/ --version ${{github.event.inputs.version}}  \
+        helm upgrade --install ${{ env.PROJECT_NAME }} helm-base-istio/ --version ${{github.event.inputs.version}} \
           --insecure-skip-tls-verify \
           --set replicaCount=1 \
-          --set istio.enabled=true \          
-          --history-max 3 \
+          --set istio.enabled=true \
+          --history-max 3 \ 
           -f .github/helm/values.yaml
