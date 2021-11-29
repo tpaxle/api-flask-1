@@ -24,13 +24,6 @@ jobs:
     runs-on: ubuntu-latest # linux-platform, ubuntu-latest
     steps:
 
-      - name: OpenShift Login
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url:     ${{ secrets.OC_URL }}
-          openshift_token:          ${{ secrets.OC_TOKEN }}
-          insecure_skip_tls_verify: true
-
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
