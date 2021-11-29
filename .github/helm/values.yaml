@@ -13,6 +13,7 @@ secrets:
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:secretpassword@my-release-mysql/app_database"
 
 istio:
+  appname: api-flask-1
   enabled: false
   gateways:
     - gateway: istio-gateway-api-platform-sandbox
