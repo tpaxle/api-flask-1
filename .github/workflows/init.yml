@@ -49,6 +49,7 @@ jobs:
       env:
         CHART_VERSION: ${{env.RELEASE_VERSION}}
         ECR: "909517579108.dkr.ecr.eu-west-2.amazonaws.com"
+        HELM_EXPERIMENTAL_OCI: 1 
       run: |
         aws ecr get-login-password --region eu-west-2 | helm registry login \
           --username AWS --password-stdin ${{env.ECR}}
