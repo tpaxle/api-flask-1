@@ -38,8 +38,8 @@ jobs:
           aws eks --region eu-west-2 update-kubeconfig --name platf5-eks-main-s1
           helm pull oci://${{ env.ECR }}/helm-api-flask-1 --version $CHART_VERSION --untar --insecure-skip-tls-verify
           ls -al
-          helm upgrade --install ${{ env.PROJECT_NAME }}-$CHART_VERSION helm-${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
+          helm upgrade --install ${{ env.PROJECT_NAME }} helm-${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
             --insecure-skip-tls-verify \
             --set replicaCount=1 \
-            --set fullnameOverride: $OVERRIDE_NAME \
+            --set fullnameOverride: {{env.OVERRIDE_NAME}} \
             --history-max 3
