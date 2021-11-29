@@ -21,7 +21,7 @@ env:
 jobs:
   cd_pre:
     environment: pre_environment
-    runs-on: almmc_redhat_runner # linux-platform, ubuntu-latest
+    runs-on: ubuntu-latest # linux-platform, ubuntu-latest
     steps:
 
       - name: OpenShift Login
