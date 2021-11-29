@@ -12,10 +12,7 @@ env:
   PROJECT_NAME: "api-flask-1"
   AWS_ACCESS_KEY_ID:  ${{   secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY:  ${{   secrets.AWS_SECRET_ACCESS_KEY }}
-
-  PROXY_ENABLE: true
-  HTTP_PROXY: "http://proxyapps.gsnet.corp:80"
-  HTTPS_PROXY: "http://proxyapps.gsnet.corp:80"
+  HELM_EXPERIMENTAL_OCI: 1 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
