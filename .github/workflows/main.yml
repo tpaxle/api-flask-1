@@ -84,6 +84,7 @@ jobs:
         ls -al
         helm push ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
         rm -rf ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz
+        rm -rf ${PROJECT_NAME}/
 
 
     - name: Add & Commit
