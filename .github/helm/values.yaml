@@ -1,7 +1,7 @@
 # This YAML file will hold Helm chart values that apply to all environments and will override default template values
 template:
   package: helm-base-services
-  version: 0.0.5
+  version: 0.0.6
 image:
   repository: 909517579108.dkr.ecr.eu-west-2.amazonaws.com
   dockerName: api-flask-1
@@ -14,10 +14,19 @@ secrets:
 
 istio:
   enabled: true
-  gateways:
+  gateways_dev:
     - gateway: istio-gateway-api-platform-sandbox
-  hosts:
+  gateways_pro:
+    - gateway: istio-gateway-api-platform-sandbox
+  hosts_pro:
     - host: api-sandbox.poc.blue1sky.me
+      paths:
+        - path: "/"
+          type: "exact"
+        - path: "/static"
+          type: "prefix"
+  hosts_dev:
+    - host: api-dev.poc.blue1sky.me
       paths:
         - path: "/"
           type: "exact"
