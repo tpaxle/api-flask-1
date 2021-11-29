@@ -6,7 +6,7 @@ on:
       version:
         description: 'helm-base-istio'
         required: true
-        default: '0.0.13'
+        default: '0.0.15'
       action:
         description: 'Action to deploy (ciapply, ciplan, validadte)'
         required: true
