@@ -1,0 +1,31 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.description" . }}
+
+## Additional Information
+
+This helm chart provides developers a template for python microservices
+
+
+To see more information about the solution go to [mongodb configuration](../../docs/README.adoc)
+
+{{ template "chart.maintainersSection" . }}
+
+
+{{ template "chart.requirementsHeader" . }}
+
+Vostok Workflow contains the nexts subcharts:
+
+{{ template "chart.requirementsTable" . }}
+
+
+{{ template "chart.valuesHeader" . }}
+
+All the following values could be edited once the application is intstantiated:
+
+{{ template "chart.valuesTable" . }}
+
+
+{{ template "helm-docs.versionFooter" . }}
