@@ -35,6 +35,6 @@ jobs:
           helm pull oci://${{ env.ECR }}/api-flask-1 --version $CHART_VERSION --untar --insecure-skip-tls-verify
           ls -al
           helm upgrade --install ${{ env.PROJECT_NAME }} ${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
-            --insecure-skip-tls-verify 
+            --insecure-skip-tls-verify \
             --set replicaCount=1 \
             --history-max 3
