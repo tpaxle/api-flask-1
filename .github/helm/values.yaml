@@ -3,7 +3,7 @@ template:
   package: helm-base-services
   version: 0.0.2
 image:
-  repository: registry.global.ccc.srvb.can.paas.cloudcenter.corp/ccc-alm
+  repository: 909517579108.dkr.ecr.eu-west-2.amazonaws.com
   dockerName: api-flask-1
 
 route:
