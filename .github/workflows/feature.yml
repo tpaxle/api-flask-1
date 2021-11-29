@@ -83,11 +83,7 @@ jobs:
         yq write $PROJECT_NAME/values.yaml image.tag $CHART_VERSION -i
         yq write $PROJECT_NAME/Chart.yaml version $CHART_VERSION -i
         yq write $PROJECT_NAME/Chart.yaml appversion $CHART_VERSION -i
-<<<<<<< HEAD
-        helm push ./$PROJECT_NAME/ myrepo --insecure
-=======
         echo "hola2"
         helm package ${PROJECT_NAME}
         ls -al
         helm push ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
->>>>>>> 8f34a3a4d6c3c38fde1c11119c5c1c7dc0ab7926
