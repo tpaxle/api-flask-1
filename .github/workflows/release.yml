@@ -1,0 +1,160 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Release Version CD
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    tags: v[0-9]+.[0-9]+.[0-9]+
+
+env:
+  PROJECT_NAME: almmc-api-python-useronboarding
+  REGISTRY: "registry.global.ccc.srvb.can.paas.cloudcenter.corp"
+  REGISTRY_PROJECT: "ccc-alm"
+  PROXY_ENABLE: true
+  HTTP_PROXY: "http://proxyapps.gsnet.corp:80"
+  HTTPS_PROXY: "http://proxyapps.gsnet.corp:80"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  cd_pre:
+    environment: pre_environment
+    runs-on: almmc_redhat_runner # linux-platform, ubuntu-latest
+    steps:
+
+      - name: OpenShift Login
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url:     ${{ secrets.OC_URL }}
+          openshift_token:          ${{ secrets.OC_TOKEN }}
+          insecure_skip_tls_verify: true
+
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Install Chart ${{ env.PROJECT_NAME }}-${{env.RELEASE_VERSION}} in Dev environment
+        env:
+          CHART_VERSION: ${{env.RELEASE_VERSION}}
+        run: |
+          helm repo add --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_TOKEN }}  myrepo https://${{env.REGISTRY}}/chartrepo/${{env.REGISTRY_PROJECT}} --insecure-skip-tls-verify --force-update
+
+          helm upgrade --install ${{ env.PROJECT_NAME }} myrepo/${{env.PROJECT_NAME}} --version $CHART_VERSION \
+            --insecure-skip-tls-verify \
+            -n ${{secrets.OC_NAMESPACE}} \
+            --set replicaCount=1 \
+            --set namespace=${{secrets.OC_NAMESPACE}} \
+            --set secrets.BBDD_HOST=${{ secrets.BBDD_HOST }}  \
+            --set secrets.BBDD_PORT=${{ secrets.BBDD_PORT }}  \
+            --set secrets.BBDD_USER=${{ secrets.BBDD_USER }}  \
+            --set secrets.BBDD_PASS=${{ secrets.BBDD_PASS }}  \
+            --set secrets.BBDD_NAME=${{ secrets.BBDD_NAME }}  \
+            --set secrets.LDAP_HOST=${{ secrets.LDAP_HOST }}  \
+            --set secrets.LDAP_USER=${{ secrets.LDAP_USER }}  \
+            --set secrets.LDAP_PASS=${{ secrets.LDAP_PASS }}  \
+            --set secrets.LDAP_API_HOST=${{ secrets.LDAP_API_HOST }}  \
+            --set secrets.LDAP_API_AUTH=${{ secrets.LDAP_API_AUTH }}  \
+            --set secrets.JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}  \
+            --set secrets.SWAGGER_BASEPATH=/apiuser \
+            --set secrets.CHART_VERSION=$CHART_VERSION \
+            --set secrets.APM_ENABLED=${{ secrets.APM_ENABLED }} \
+            --set secrets.APM_SERVERTOKEN=${{ secrets.APM_SERVERTOKEN }} \
+            --set secrets.APM_SERVERURL=${{ secrets.APM_SERVERURL }} \
+            --set secrets.APM_ENV=PRE \
+            --history-max 3
+
+  cd_pro_shadow:
+    environment: pro_environment_shadow
+    runs-on: almmc_redhat_runner # linux-platform, ubuntu-latest
+    needs: cd_pre
+    steps:
+      - name: Install CLI tools
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "3"
+
+      - name: OpenShift Login
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url:     ${{ secrets.OC_URL }}
+          openshift_token:          ${{ secrets.OC_TOKEN }}
+          insecure_skip_tls_verify: true
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Install Chart ${{ env.PROJECT_NAME }}-${{env.RELEASE_VERSION}} in Dev environment
+        env:
+          CHART_VERSION: ${{env.RELEASE_VERSION}}
+        run: |
+          helm repo add --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_TOKEN }}  myrepo https://${{env.REGISTRY}}/chartrepo/${{env.REGISTRY_PROJECT}} --insecure-skip-tls-verify --force-update
+          helm upgrade --install ${{ env.PROJECT_NAME }}-shadow myrepo/${{env.PROJECT_NAME}} --version $CHART_VERSION \
+            --insecure-skip-tls-verify \
+            -n ${{secrets.OC_NAMESPACE}} \
+            --set replicaCount=1 \
+            --set namespace=${{secrets.OC_NAMESPACE}} \
+            --set secrets.BBDD_HOST=${{ secrets.BBDD_HOST }}  \
+            --set secrets.BBDD_PORT=${{ secrets.BBDD_PORT }}  \
+            --set secrets.BBDD_USER=${{ secrets.BBDD_USER }}  \
+            --set secrets.BBDD_PASS=${{ secrets.BBDD_PASS }}  \
+            --set secrets.BBDD_NAME=${{ secrets.BBDD_NAME }}  \
+            --set secrets.LDAP_HOST=${{ secrets.LDAP_HOST }}  \
+            --set secrets.LDAP_USER=${{ secrets.LDAP_USER }}  \
+            --set secrets.LDAP_PASS=${{ secrets.LDAP_PASS }}  \
+            --set secrets.LDAP_API_HOST=${{ secrets.LDAP_API_HOST }}  \
+            --set secrets.LDAP_API_AUTH=${{ secrets.LDAP_API_AUTH }}  \
+            --set secrets.JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}  \
+            --set secrets.SWAGGER_BASEPATH=/apiuser \
+            --set secrets.CHART_VERSION=$CHART_VERSION \
+            --set secrets.APM_ENABLED=${{ secrets.APM_ENABLED }} \
+            --set secrets.APM_SERVERTOKEN=${{ secrets.APM_SERVERTOKEN }} \
+            --set secrets.APM_SERVERURL=${{ secrets.APM_SERVERURL }} \
+            --set secrets.APM_ENV=PROSHADOW \
+            --history-max 3
+
+  cd_pro:
+    environment: pro_environment
+    runs-on: almmc_redhat_runner # linux-platform, ubuntu-latest
+    needs: cd_pro_shadow
+    steps:
+      - name: Install CLI tools
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: "3"
+
+      - name: OpenShift Login
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url:     ${{ secrets.OC_URL }}
+          openshift_token:          ${{ secrets.OC_TOKEN }}
+          insecure_skip_tls_verify: true
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Install Chart ${{ env.PROJECT_NAME }}-${{env.RELEASE_VERSION}} in Dev environment
+        env:
+          CHART_VERSION: ${{env.RELEASE_VERSION}}
+        run: |
+          helm repo add --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_TOKEN }}  myrepo https://${{env.REGISTRY}}/chartrepo/${{env.REGISTRY_PROJECT}} --insecure-skip-tls-verify --force-update
+          helm upgrade --install ${{ env.PROJECT_NAME }} myrepo/${{env.PROJECT_NAME}} --version $CHART_VERSION \
+            --insecure-skip-tls-verify \
+            -n ${{secrets.OC_NAMESPACE}} \
+            --set replicaCount=1 \
+            --set namespace=${{secrets.OC_NAMESPACE}} \
+            --set secrets.BBDD_HOST=${{ secrets.BBDD_HOST }}  \
+            --set secrets.BBDD_PORT="${{ secrets.BBDD_PORT }}"  \
+            --set secrets.BBDD_USER=${{ secrets.BBDD_USER }}  \
+            --set secrets.BBDD_PASS=${{ secrets.BBDD_PASS }}  \
+            --set secrets.BBDD_NAME=${{ secrets.BBDD_NAME }}  \
+            --set secrets.LDAP_HOST=${{ secrets.LDAP_HOST }}  \
+            --set secrets.LDAP_USER=${{ secrets.LDAP_USER }}  \
+            --set secrets.LDAP_PASS=${{ secrets.LDAP_PASS }}  \
+            --set secrets.LDAP_API_HOST=${{ secrets.LDAP_API_HOST }}  \
+            --set secrets.LDAP_API_AUTH=${{ secrets.LDAP_API_AUTH }}  \
+            --set secrets.JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}  \
+            --set secrets.SWAGGER_BASEPATH=/apiuser \
+            --set secrets.CHART_VERSION=$CHART_VERSION \
+            --set secrets.APM_ENABLED=${{ secrets.APM_ENABLED }} \
+            --set secrets.APM_SERVERTOKEN=${{ secrets.APM_SERVERTOKEN }} \
+            --set secrets.APM_SERVERURL=${{ secrets.APM_SERVERURL }} \
+            --set secrets.APM_ENV=PRO \
+            --history-max 3
