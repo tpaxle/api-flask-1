@@ -59,4 +59,6 @@ jobs:
         helm upgrade --install ${{ env.PROJECT_NAME }} helm-base-istio/ --version ${{github.event.inputs.version}}  \
           --insecure-skip-tls-verify \
           --set replicaCount=1 \
-          --history-max 3
+          --set istio.enabled=true \          
+          --history-max 3 \
+          -f .github/helm/values.yaml
