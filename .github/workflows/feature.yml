@@ -65,10 +65,14 @@ jobs:
     - name: Create package Helm
       env:
         CHART_VERSION: ${{ steps.tag_version.outputs.new_tag }}
+        ECR: "909517579108.dkr.ecr.eu-west-2.amazonaws.com"
       run: |
-        helm plugin install https://github.com/chartmuseum/helm-push.git || true
-        helm repo add --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_TOKEN }}  myrepo https://${{env.REGISTRY}}/chartrepo/${{env.REGISTRY_PROJECT}} --insecure-skip-tls-verify --force-update
-        helm pull myrepo/`yq read .github/helm/values.yaml template.package` --version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
+
+        aws ecr get-login-password --region eu-west-2 | helm registry login \
+          --username AWS --password-stdin ${{env.ECR}}
+
+        helm pull oci://{{ env.ECR }}/`yq read .github/helm/values.yaml template.package`--version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
+
         mv `yq read .github/helm/values.yaml template.package` ${{env.PROJECT_NAME}}
         sed -i.bak "s#name: `yq read .github/helm/values.yaml template.package`#name: $PROJECT_NAME#"  $PROJECT_NAME/Chart.yaml
         yq merge -a -x -i $PROJECT_NAME/values.yaml .github/helm/values.yaml
