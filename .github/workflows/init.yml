@@ -60,5 +60,5 @@ jobs:
           --insecure-skip-tls-verify \
           --set replicaCount=1 \
           --set istio.enabled=true \
-          --history-max 3 \ 
+          --history-max 3 \
           -f .github/helm/values.yaml
