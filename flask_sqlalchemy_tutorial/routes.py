@@ -5,6 +5,7 @@ from flask import current_app as app
 from flask import make_response, redirect, render_template, request, url_for
 
 from .models import User, db
+from os import environ, path
 
 
 @app.route("/", methods=["GET"])
@@ -29,4 +30,4 @@ def user_records():
         db.session.add(new_user)  # Adds new User record to database
         db.session.commit()  # Commits all changes
         redirect(url_for("user_records"))
-    return render_template("users.jinja2", users=User.query.all(), title="Show Users")
+    return render_template("users.jinja2", users=User.query.all(), version=environ.get('VERSION') ,title="Show Users")
