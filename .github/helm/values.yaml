@@ -10,7 +10,7 @@ route:
   enabled: false
 
 secrets:
-  SQLALCHEMY_DATABASE_URI: "mysql://root:secretpassword@my-release-mysql/app_database"
+  SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:secretpassword@my-release-mysql/app_database"
 
 
 probe:
