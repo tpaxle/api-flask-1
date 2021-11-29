@@ -19,8 +19,10 @@ istio:
   hosts:
     - host: api-sandbox.poc.blue1sky.me
       paths:
-        - "/"
-        - "/static"
+        - path: "/"
+          type: "exact"
+        - path: "/static"
+          type: "prefix"
 
 probe:
   readiness:
