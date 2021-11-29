@@ -12,6 +12,13 @@ route:
 secrets:
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:secretpassword@my-release-mysql/app_database"
 
+ingress:
+  enabled: true
+  annottations: 
+    kubernetes.io/ingress.class: istio
+
+  hosts:
+    - host: test.sandbox.blue4sky.local
 
 probe:
   readiness:
