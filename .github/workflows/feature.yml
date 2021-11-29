@@ -5,7 +5,7 @@ on:
     branches: [ feature/**, fix/**, develop, feat/** ]
 
 env:
-  PROJECT_NAME: api-flask-1
+  PROJECT_NAME: "api-flask-1"
   REGISTRY: "registry.global.ccc.srvb.can.paas.cloudcenter.corp"
   REGISTRY_PROJECT: "ccc-alm"
   PROXY_ENABLE: true
@@ -53,7 +53,7 @@ jobs:
         # AWS Account ID
         account_id: 909517579108
         # Name of your ECR repository
-        repo: ${env.PROJECT_NAME}
+        repo: ${{ env.PROJECT_NAME }}
         # The AWS region
         region: eu-west-2
         # Set this to true to create the repository if it does not already exist
