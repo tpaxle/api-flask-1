@@ -13,7 +13,7 @@ secrets:
   SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:secretpassword@my-release-mysql/app_database"
 
 istio:
-  enabled: true
+  enabled: false
   gateways:
     - gateway: istio-gateway-api-platform-sandbox
   host_name:  api-sandbox.poc.blue1sky.me
