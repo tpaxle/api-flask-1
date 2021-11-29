@@ -58,7 +58,7 @@ jobs:
         region: eu-west-2
         # Set this to true to create the repository if it does not already exist
         create_repo: true
-        tags:  ${{ env.SHORT_SHA }}
+        tags:  ${{ steps.tag_version.outputs.new_tag }}
         # Name of Dockerfile to use
         dockerfile: .github/dockerfile/Dockerfile
 
