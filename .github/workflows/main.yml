@@ -66,6 +66,7 @@ jobs:
       env:
         CHART_VERSION: ${{ steps.tag_version.outputs.new_tag }}
         ECR: "909517579108.dkr.ecr.eu-west-2.amazonaws.com"
+        HELM_PACKAGE: "helm-api-flask-1"
         HELM_EXPERIMENTAL_OCI: 1 
       run: |
 
@@ -73,18 +74,18 @@ jobs:
           --username AWS --password-stdin ${{env.ECR}}
 
         helm pull oci://${{ env.ECR }}/`yq read .github/helm/values.yaml template.package` --version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
-        mv `yq read .github/helm/values.yaml template.package` ${{env.PROJECT_NAME}}
-        sed -i.bak "s#name: `yq read .github/helm/values.yaml template.package`#name: $PROJECT_NAME#"  $PROJECT_NAME/Chart.yaml
-        yq merge -a -x -i $PROJECT_NAME/values.yaml .github/helm/values.yaml
-        yq write $PROJECT_NAME/values.yaml image.tag $CHART_VERSION -i
-        yq write $PROJECT_NAME/Chart.yaml version $CHART_VERSION -i
-        yq write $PROJECT_NAME/Chart.yaml appversion $CHART_VERSION -i
+        mv `yq read .github/helm/values.yaml template.package` ${{env.HELM_PACKAGE}}
+        sed -i.bak "s#name: `yq read .github/helm/values.yaml template.package`#name: $HELM_PACKAGE#"  $HELM_PACKAGE/Chart.yaml
+        yq merge -a -x -i $HELM_PACKAGE/values.yaml .github/helm/values.yaml
+        yq write $HELM_PACKAGE/values.yaml image.tag $CHART_VERSION -i
+        yq write $HELM_PACKAGE/Chart.yaml version $CHART_VERSION -i
+        yq write $HELM_PACKAGE/Chart.yaml appversion $CHART_VERSION -i
         echo "hola2"
-        helm package ${PROJECT_NAME}
+        helm package ${HELM_PACKAGE}
         ls -al
-        helm push ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
-        rm -rf ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz
-        rm -rf ${PROJECT_NAME}/
+        helm push ${HELM_PACKAGE}-${{env.CHART_VERSION}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
+        rm -rf ${HELM_PACKAGE}-${{env.CHART_VERSION}}.tgz
+        rm -rf ${HELM_PACKAGE}/
 
 
     - name: Add & Commit
