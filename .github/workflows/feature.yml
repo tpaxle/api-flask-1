@@ -73,13 +73,13 @@ jobs:
           --username AWS --password-stdin ${{env.ECR}}
         echo "helm pull oci://${{ env.ECR }}/`yq read .github/helm/values.yaml template.package` --version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify"
         helm pull oci://${{ env.ECR }}/`yq read .github/helm/values.yaml template.package` --version `yq read .github/helm/values.yaml template.version` --untar --insecure-skip-tls-verify
-        echo "hola"
-        mv `yq read .github/helm/values.yaml template.package` ${{env.PROJECT_NAME}}
+c        mv `yq read .github/helm/values.yaml template.package` ${{env.PROJECT_NAME}}
         sed -i.bak "s#name: `yq read .github/helm/values.yaml template.package`#name: $PROJECT_NAME#"  $PROJECT_NAME/Chart.yaml
         yq merge -a -x -i $PROJECT_NAME/values.yaml .github/helm/values.yaml
         yq write $PROJECT_NAME/values.yaml image.tag $CHART_VERSION -i
         yq write $PROJECT_NAME/Chart.yaml version $CHART_VERSION -i
         yq write $PROJECT_NAME/Chart.yaml appversion $CHART_VERSION -i
-        helm push ${CHART_NAME}-${{env.IMAGE_TAG}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
+        echo "hola2"
         helm package ${PROJECT_NAME}
+        ls -al
         helm push ${PROJECT_NAME}-${{env.CHART_VERSION}}.tgz oci://909517579108.dkr.ecr.eu-west-2.amazonaws.com/
