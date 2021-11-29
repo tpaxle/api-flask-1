@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "base.fullname" . }}
+  labels:
+    {{- include "base.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "base.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "base.labels" . | nindent 8 }}
+        {{- include "base.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "base.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if .Values.commands }}
+          command:
+            {{- range .Values.commands }}
+            - {{ . }}
+            {{- end }}
+          {{- end }}        
+          image: "{{ .Values.image.repository }}/{{ .Values.image.dockerName }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.container.port }}
+            name: {{ .Values.container.name }}   
+          envFrom:
+          - secretRef:
+              name: {{ include "base.fullname" . }}     
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probe.readiness.path }}
+              port: {{ .Values.container.port }}
+            initialDelaySeconds:  {{ .Values.probe.readiness.initialdelay }}
+            periodSeconds: {{ .Values.probe.readiness.periodSeconds }}
+            successThreshold: {{ .Values.probe.readiness.success }}
+            timeoutSeconds: {{ .Values.probe.readiness.timeoutseconds }}            
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probe.readiness.path }}
+              port: {{ .Values.probe.readiness.port | default  .Values.container.port }}
+            initialDelaySeconds:  {{ .Values.probe.readiness.initialdelay }}
+            periodSeconds: {{ .Values.probe.readiness.periodSeconds }}
+            successThreshold: {{ .Values.probe.readiness.success }}
+            timeoutSeconds: {{ .Values.probe.readiness.timeoutseconds }}              
+          livenessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: {{ .Values.probe.liveness.path }}
+              port: {{ .Values.probe.liveness.port | default  .Values.container.port }}
+              scheme: HTTP
+            initialDelaySeconds:  {{ .Values.probe.liveness.initialdelay }}
+            periodSeconds: {{ .Values.probe.liveness.periodSeconds }}
+            successThreshold: {{ .Values.probe.liveness.success }}
+            timeoutSeconds: {{ .Values.probe.liveness.timeoutseconds }}                          
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
