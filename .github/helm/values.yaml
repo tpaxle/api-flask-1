@@ -4,7 +4,7 @@ template:
   version: 0.0.2
 image:
   repository: registry.global.ccc.srvb.can.paas.cloudcenter.corp/ccc-alm
-  dockerName: almmc-api-python-useronboarding
+  dockerName: api-flask-1
 
 route:
   enabled: false
