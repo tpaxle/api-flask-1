@@ -32,7 +32,6 @@ jobs:
           CHART_VERSION: ${{env.RELEASE_VERSION}}
           ECR: "909517579108.dkr.ecr.eu-west-2.amazonaws.com"
         run: |
-          helm repo add --username ${{ secrets.REGISTRY_USERNAME }} --password ${{ secrets.REGISTRY_TOKEN }}  myrepo https://${{env.REGISTRY}}/chartrepo/${{env.REGISTRY_PROJECT}} --insecure-skip-tls-verify --force-update
           aws ecr get-login-password --region eu-west-2 | helm registry login \
             --username AWS --password-stdin ${{env.ECR}}
           helm pull oci://${{ env.ECR }}/api-flask-1 --version $CHART_VERSION --untar --insecure-skip-tls-verify
