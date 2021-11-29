@@ -41,5 +41,5 @@ jobs:
           helm upgrade --install ${{ env.PROJECT_NAME }}-${{ env.OVERRIDE_NAME}} helm-${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
             --insecure-skip-tls-verify \
             --set replicaCount=1 \
-            --set fullnameOverride: ${{ env.PROJECT_NAME}}-${{ env.OVERRIDE_NAME}} \
+            --set fullnameOverride=${{ env.PROJECT_NAME}}-${{ env.OVERRIDE_NAME}} \
             --history-max 3
