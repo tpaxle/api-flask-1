@@ -41,5 +41,5 @@ jobs:
           helm upgrade --install ${{ env.PROJECT_NAME }}-$CHART_VERSION helm-${{env.PROJECT_NAME}}/ --version $CHART_VERSION \
             --insecure-skip-tls-verify \
             --set replicaCount=1 \
-            --set fullnameOverride: api-flask-1-`echo "${{ env.CHART_VERSION }}" | sed 's/\./-/g'` \
+            --set fullnameOverride: $OVERRIDE_NAME \
             --history-max 3
