@@ -5,6 +5,7 @@ on:
     branches: [ feature/**, fix/**, develop, feat/** ]
 
 env:
+  PROJECT_NAME: api-flask-1
   REGISTRY: "registry.global.ccc.srvb.can.paas.cloudcenter.corp"
   REGISTRY_PROJECT: "ccc-alm"
   PROXY_ENABLE: true
