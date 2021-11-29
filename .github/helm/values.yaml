@@ -17,8 +17,8 @@ probe:
   readiness:
     initialdelay: 30
     port: 5000
-    path: /healthcheck/
+    path: /
   liveness:
     initialdelay: 30
     port: 5000
-    path: /healthcheck/
+    path: /
