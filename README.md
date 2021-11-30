@@ -30,7 +30,7 @@ Replace the values in **.env.example** with your values and rename this file to 
 * `SQLALCHEMY_DATABASE_URI`: SQLAlchemy connection URI to a SQL database.
 
 *Remember never to commit secrets saved in .env files to Github.*
-test
+test asdf
 
 ### Installation
 
